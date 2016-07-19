@@ -64,7 +64,7 @@ public class messageObject {
 
     @Override
     public String toString() {
-        String output = timeStamp + ":\n" + message;
+        String output = timeStamp + ":\n" + preview;
 
         return output;
     }

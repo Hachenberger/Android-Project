@@ -46,44 +46,59 @@ public class messageDatabase {
     public messageObject createMessageObject(String timeStamp, String message, String StringId) {
         ContentValues values = new ContentValues();
 
-        String preview = "";
+        Log.d(LOG_TAG, "Start createMessageObject.");
+
+        String preview = message;
         if (message.length() > 100) {
             preview = message.substring(0,96) + "...";
         } else {
             preview = message;
         }
-
+        Log.d(LOG_TAG, "Putting values.");
         values.put(archiveDbHelper.COLUMN_TIME, timeStamp);
         values.put(archiveDbHelper.COLUMN_MESSAGE, message);
         values.put(archiveDbHelper.COLUMN_PREVIEW, preview);
         values.put(archiveDbHelper.COLUMN_STRING_ID, StringId);
 
+        Log.d(LOG_TAG, "Inserting values.");
         long insertId = database.insert(archiveDbHelper.TABLE_MESSAGES, null, values);
 
+        Log.d(LOG_TAG, "Creating cursor.");
         Cursor cursor = database.query(archiveDbHelper.TABLE_MESSAGES,
-                columns, archiveDbHelper.COLUMN_TIME + "=" + insertId,
+                columns, archiveDbHelper.COLUMN_ID + "=" + insertId,
                 null, null, null, null);
 
+        Log.d(LOG_TAG, "moving cursor to first.");
         cursor.moveToFirst();
+
+        Log.d(LOG_TAG, "calling cursorToMessageObject.");
         messageObject messageObj = cursorToMessageObject(cursor);
+
+        Log.d(LOG_TAG, "closing cursor.");
         cursor.close();
 
         return messageObj;
     }
 
     private messageObject cursorToMessageObject(Cursor cursor) {
+        Log.d(LOG_TAG, "getting Id's.");
         int idTime = cursor.getColumnIndex(archiveDbHelper.COLUMN_TIME);
         int idMessage = cursor.getColumnIndex(archiveDbHelper.COLUMN_MESSAGE);
         int idPreview = cursor.getColumnIndex(archiveDbHelper.COLUMN_PREVIEW);
         int idStringId = cursor.getColumnIndex(archiveDbHelper.COLUMN_STRING_ID);
         int idId = cursor.getColumnIndex(archiveDbHelper.COLUMN_ID);
 
+        Log.d(LOG_TAG, "getting time-string." + idTime);
         String timeStamp = cursor.getString(idTime);
+        Log.d(LOG_TAG, "getting message-string.");
         String message = cursor.getString(idMessage);
         String preview = cursor.getString(idPreview);
         String StringId = cursor.getString(idStringId);
+
+        Log.d(LOG_TAG, "getting long id");
         long id = cursor.getLong(idId);
 
+        Log.d(LOG_TAG, "creating messageobject");
         messageObject messageObj = new messageObject(timeStamp, message, preview, StringId, id);
 
         return messageObj;
