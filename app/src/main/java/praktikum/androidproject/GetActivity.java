@@ -1,15 +1,17 @@
 package praktikum.androidproject;
 
+import android.app.Activity;
+import android.hardware.SensorManager;
+import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
+import android.view.View;
+import android.widget.Button;
+import android.widget.TextView;
+import android.os.AsyncTask;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
-import android.os.AsyncTask;
-import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
-import android.view.View;
-import android.widget.Button;
-import android.widget.TextView;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -18,17 +20,18 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-public class MainActivity extends AppCompatActivity {
+/**
+ * Created by Kay on 19.07.2016.
+ */
+public class GetActivity extends AppCompatActivity {
 
     private TextView antwort;
+    private static final String LOG_TAG = GetActivity.class.getSimpleName();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-
-
-
+        setContentView(R.layout.activity_get);
         //Ab hier von mir PW
 
         //Button und TextFeld
@@ -44,13 +47,13 @@ public class MainActivity extends AppCompatActivity {
 
         });
 
-
+/*
         //Beginn Test Sensor
 
         SensorManager sMgr;
         sMgr = (SensorManager)this.getSystemService(SENSOR_SERVICE);
         Sensor motion;
-        motion = sMgr.getDefaultSensor(Sensor.TYPE_MOTION_DETECT);
+        motion = sMgr.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
 
         SensorEventListener mySensorEventListener = new SensorEventListener() {
 
@@ -67,7 +70,7 @@ public class MainActivity extends AppCompatActivity {
         sMgr.registerListener(mySensorEventListener, motion, SensorManager.SENSOR_DELAY_NORMAL);
 
         //Ende Test Sensor
-
+*/
 
 
 
@@ -75,14 +78,13 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-public class getRequest extends AsyncTask<String, String, String> {
+    public class getRequest extends AsyncTask<String, String, String> {
 
 
-    @Override
-    protected String doInBackground(String... params) {
-
-       HttpURLConnection verbindung = null;
-       BufferedReader reader = null;
+        @Override
+        protected String doInBackground(String... params) {
+            HttpURLConnection verbindung = null;
+            BufferedReader reader = null;
             try {
                 URL url = new URL(params[0]);
                 verbindung = (HttpURLConnection) url.openConnection();
@@ -91,35 +93,40 @@ public class getRequest extends AsyncTask<String, String, String> {
                 reader = new BufferedReader(new InputStreamReader(stream));
                 StringBuffer buffer = new StringBuffer();
                 String zeile = "";
-                    while((zeile = reader.readLine()) != null){
+                while((zeile = reader.readLine()) != null){
                     buffer.append(zeile);
-                    }
-                    return buffer.toString();
-                } catch (MalformedURLException e) {
+                }
+                return buffer.toString();
+            } catch (MalformedURLException e) {
                 e.printStackTrace();
-                } catch (IOException e) {
+            } catch (IOException e) {
                 e.printStackTrace();
-                }finally {
+            }finally {
                 if (verbindung != null) {
-                verbindung.disconnect();
+                    verbindung.disconnect();
                 }
                 try {
-                if (reader != null) {
-                reader.close();
-                }
+                    if (reader != null) {
+                        reader.close();
+                    }
                 } catch (IOException e) {
-                e.printStackTrace();
+                    e.printStackTrace();
                 }
-                }
-                return null;
-                }
+            }
+            return null;
+        }
 
 
 
         @Override
         protected void onPostExecute(String result) {
             super.onPostExecute(result);
-            antwort.setText(result);
+
+            JsonParser jsonParser = new JsonParser(result);
+
+            messageObject msgObj = jsonParser.getMessageObject();
+
+            antwort.setText(msgObj.toString());
 
 
         }
