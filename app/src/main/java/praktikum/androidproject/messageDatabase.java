@@ -23,7 +23,6 @@ public class messageDatabase {
             archiveDbHelper.COLUMN_ID,
             archiveDbHelper.COLUMN_TIME,
             archiveDbHelper.COLUMN_MESSAGE,
-            archiveDbHelper.COLUMN_PREVIEW,
             archiveDbHelper.COLUMN_STRING_ID
     };
 
@@ -33,8 +32,10 @@ public class messageDatabase {
     }
 
     public void open() {
+        //database.execSQL("DROP TABLE IF EXISTS " + archiveDbHelper.TABLE_MESSAGES);
         Log.d(LOG_TAG, "Eine Referenz auf die Datenbank wird jetzt angefragt.");
         database = dbHelper.getWritableDatabase();
+        database.delete("table_messages",null,null);
         Log.d(LOG_TAG, "Datenbank-Referenz erhalten. Pfad zur Datenbank: " + database.getPath());
     }
 
@@ -48,20 +49,14 @@ public class messageDatabase {
 
         Log.d(LOG_TAG, "Start createMessageObject.");
 
-        String preview = message;
-        if (message.length() > 100) {
-            preview = message.substring(0,96) + "...";
-        } else {
-            preview = message;
-        }
         Log.d(LOG_TAG, "Putting values.");
         values.put(archiveDbHelper.COLUMN_TIME, timeStamp);
         values.put(archiveDbHelper.COLUMN_MESSAGE, message);
-        values.put(archiveDbHelper.COLUMN_PREVIEW, preview);
         values.put(archiveDbHelper.COLUMN_STRING_ID, StringId);
 
         Log.d(LOG_TAG, "Inserting values.");
         long insertId = database.insert(archiveDbHelper.TABLE_MESSAGES, null, values);
+        Log.d(LOG_TAG, "InsertID: " + insertId);
 
         Log.d(LOG_TAG, "Creating cursor.");
         Cursor cursor = database.query(archiveDbHelper.TABLE_MESSAGES,
@@ -84,7 +79,6 @@ public class messageDatabase {
         Log.d(LOG_TAG, "getting Id's.");
         int idTime = cursor.getColumnIndex(archiveDbHelper.COLUMN_TIME);
         int idMessage = cursor.getColumnIndex(archiveDbHelper.COLUMN_MESSAGE);
-        int idPreview = cursor.getColumnIndex(archiveDbHelper.COLUMN_PREVIEW);
         int idStringId = cursor.getColumnIndex(archiveDbHelper.COLUMN_STRING_ID);
         int idId = cursor.getColumnIndex(archiveDbHelper.COLUMN_ID);
 
@@ -92,14 +86,13 @@ public class messageDatabase {
         String timeStamp = cursor.getString(idTime);
         Log.d(LOG_TAG, "getting message-string.");
         String message = cursor.getString(idMessage);
-        String preview = cursor.getString(idPreview);
         String StringId = cursor.getString(idStringId);
 
         Log.d(LOG_TAG, "getting long id");
         long id = cursor.getLong(idId);
 
         Log.d(LOG_TAG, "creating messageobject");
-        messageObject messageObj = new messageObject(timeStamp, message, preview, StringId, id);
+        messageObject messageObj = new messageObject(timeStamp, message, StringId, id);
 
         return messageObj;
     }
@@ -115,6 +108,7 @@ public class messageDatabase {
 
         while(!cursor.isAfterLast()) {
             messageObj = cursorToMessageObject(cursor);
+            messageObj.setPreview(false);
             messageObjectList.add(messageObj);
             Log.d(LOG_TAG, "ID: " + messageObj.getId() + ", Inhalt: " + messageObj.toString());
             cursor.moveToNext();

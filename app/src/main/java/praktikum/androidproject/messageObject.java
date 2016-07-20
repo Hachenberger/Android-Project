@@ -4,14 +4,14 @@ public class messageObject {
 
     private String timeStamp;
     private String message;
-    private String preview;
+    private boolean preview;
     private String StringId;
     private long id;
 
-    public messageObject(String timeStamp, String message, String preview, String StringId, long id) {
+    public messageObject(String timeStamp, String message, String StringId, long id) {
         this.timeStamp = timeStamp;
         this.message = message;
-        this.preview = preview;
+        this.preview = false;
         this.StringId = StringId;
         this.id = id;
     }
@@ -32,11 +32,11 @@ public class messageObject {
         this.message = message;
     }
 
-    public String getPreview() {
+    public boolean getPreview() {
         return preview;
     }
 
-    public void setPreview(String preview) {
+    public void setPreview(boolean preview) {
         this.preview = preview;
     }
 
@@ -64,9 +64,20 @@ public class messageObject {
 
     @Override
     public String toString() {
-        String output = timeStamp + ":\n" + preview;
+
+        String output = "";
+
+        if (this.preview) {
+            if (this.message.length() > 25) {
+                output = timeStamp + "\n" + message.substring(0,21) + "...";
+            } else {
+                output = timeStamp + "\n" + message;
+            }
+        }
+        else {
+            output = timeStamp + "\n" + message;
+        }
 
         return output;
     }
-
 }

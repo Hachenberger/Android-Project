@@ -12,7 +12,7 @@ public class archiveDbHelper extends SQLiteOpenHelper {
 
     private static final String LOG_TAG = archiveDbHelper.class.getSimpleName();
 
-    public static final String DB_NAME = "msg_archive.db";
+    public static final String DB_NAME = "msg_archiv.db";
     public static final int DB_VERSION = 1;
 
     public static final String TABLE_MESSAGES = "table_messages";
@@ -20,7 +20,6 @@ public class archiveDbHelper extends SQLiteOpenHelper {
     public static final String COLUMN_ID = "_id";
     public static final String COLUMN_TIME = "time";
     public static final String COLUMN_MESSAGE = "message";
-    public static final String COLUMN_PREVIEW = "preview";
     public static final String COLUMN_STRING_ID = "id";
 
     public final String SQL_CREATE =
@@ -28,7 +27,6 @@ public class archiveDbHelper extends SQLiteOpenHelper {
                     "(" + COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
                     COLUMN_TIME + " TEXT NOT NULL, " +
                     COLUMN_MESSAGE + " TEXT NOT NULL, " +
-                    COLUMN_PREVIEW + " TEXT NOT NULL, " +
                     COLUMN_STRING_ID + " TEXT NOT NULL);";
 
 

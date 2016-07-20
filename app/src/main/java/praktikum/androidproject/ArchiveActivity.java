@@ -6,6 +6,8 @@ import android.util.Log;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.List;
 
 import praktikum.androidproject.R;
@@ -26,9 +28,14 @@ public class ArchiveActivity extends AppCompatActivity {
         Log.d(LOG_TAG, "Creating database.");
         database = new messageDatabase(this);
 
+
         database.open();
         Log.d(LOG_TAG, "Creating message.");
-        messageObject msg = database.createMessageObject("123", "testnachricht fewafewsgesgeragwwwwwwwwwwwwwwwwwwwwww", "abc");
+        Calendar calendar = new GregorianCalendar();
+        int month = calendar.get(Calendar.MONTH) + 1;
+        String time = calendar.get(Calendar.YEAR) + "/" + month + "/" + calendar.get(Calendar.DAY_OF_MONTH) + "     "
+                + calendar.get(Calendar.HOUR_OF_DAY) + ":" + calendar.get(Calendar.MINUTE);
+        messageObject msg = database.createMessageObject(time, "testnachricht fewafewsgesgeragwwwwwwwwwwwwwwwwwwwwww", "abc");
         showAllListEntries();
         database.close();
 
@@ -37,12 +44,12 @@ public class ArchiveActivity extends AppCompatActivity {
     private void showAllListEntries () {
         List<messageObject> messageObjectList = database.getAllMessageObjects();
 
-        ArrayAdapter<messageObject> shoppingMemoArrayAdapter = new ArrayAdapter<> (
+        ArrayAdapter<messageObject> messageObjectArrayAdapter = new ArrayAdapter<> (
                 this,
                 android.R.layout.simple_list_item_1,
                 messageObjectList);
 
         ListView shoppingMemosListView = (ListView) findViewById(R.id.listview_archive_messages);
-        shoppingMemosListView.setAdapter(shoppingMemoArrayAdapter);
+        shoppingMemosListView.setAdapter(messageObjectArrayAdapter);
     }
 }
