@@ -5,9 +5,6 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
-/**
- * Created by Kay on 18.07.2016.
- */
 public class archiveDbHelper extends SQLiteOpenHelper {
 
     private static final String LOG_TAG = archiveDbHelper.class.getSimpleName();
@@ -31,7 +28,6 @@ public class archiveDbHelper extends SQLiteOpenHelper {
 
 
     public archiveDbHelper(Context context) {
-        //super(context, "PLATZHALTER_DATENBANKNAME", null, 1);
         super(context, DB_NAME, null, DB_VERSION);
         Log.d(LOG_TAG, "DbHelper hat die Datenbank: " + getDatabaseName() + " erzeugt.");
     }

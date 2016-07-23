@@ -1,8 +1,5 @@
 package praktikum.androidproject;
 
-/**
- * Created by Kay on 19.07.2016.
- */
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -32,10 +29,9 @@ public class messageDatabase {
     }
 
     public void open() {
-        //database.execSQL("DROP TABLE IF EXISTS " + archiveDbHelper.TABLE_MESSAGES);
         Log.d(LOG_TAG, "Eine Referenz auf die Datenbank wird jetzt angefragt.");
         database = dbHelper.getWritableDatabase();
-        database.delete("table_messages",null,null);
+        //database.delete("table_messages",null,null);
         Log.d(LOG_TAG, "Datenbank-Referenz erhalten. Pfad zur Datenbank: " + database.getPath());
     }
 
@@ -92,7 +88,7 @@ public class messageDatabase {
         long id = cursor.getLong(idId);
 
         Log.d(LOG_TAG, "creating messageobject");
-        messageObject messageObj = new messageObject(timeStamp, message, StringId, id);
+        messageObject messageObj = new messageObject(id, message, StringId, timeStamp);
 
         return messageObj;
     }

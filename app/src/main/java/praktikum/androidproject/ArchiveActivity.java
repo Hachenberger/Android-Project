@@ -12,9 +12,6 @@ import java.util.List;
 
 import praktikum.androidproject.R;
 
-/**
- * Created by Kay on 19.07.2016.
- */
 public class ArchiveActivity extends AppCompatActivity {
 
     private static final String LOG_TAG = ArchiveActivity.class.getSimpleName();
@@ -28,14 +25,7 @@ public class ArchiveActivity extends AppCompatActivity {
         Log.d(LOG_TAG, "Creating database.");
         database = new messageDatabase(this);
 
-
         database.open();
-        Log.d(LOG_TAG, "Creating message.");
-        Calendar calendar = new GregorianCalendar();
-        int month = calendar.get(Calendar.MONTH) + 1;
-        String time = calendar.get(Calendar.YEAR) + "/" + month + "/" + calendar.get(Calendar.DAY_OF_MONTH) + "     "
-                + calendar.get(Calendar.HOUR_OF_DAY) + ":" + calendar.get(Calendar.MINUTE);
-        messageObject msg = database.createMessageObject(time, "testnachricht fewafewsgesgeragwwwwwwwwwwwwwwwwwwwwww", "abc");
         showAllListEntries();
         database.close();
 

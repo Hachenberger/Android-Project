@@ -1,5 +1,8 @@
 package praktikum.androidproject;
 
+import java.util.Calendar;
+import java.util.GregorianCalendar;
+
 public class messageObject {
 
     private String timeStamp;
@@ -8,12 +11,17 @@ public class messageObject {
     private String StringId;
     private long id;
 
-    public messageObject(String timeStamp, String message, String StringId, long id) {
-        this.timeStamp = timeStamp;
-        this.message = message;
-        this.preview = false;
-        this.StringId = StringId;
+    public messageObject(long id, String... params) {
+
         this.id = id;
+        this.message = params[0];
+        this.StringId = params[1];
+
+        if (params.length > 2) {
+            this.timeStamp = params[2];
+        } else {
+            this.timeStamp = makeTimeStamp();
+        }
     }
 
     public String getTimeStamp() {
@@ -60,6 +68,16 @@ public class messageObject {
         String output = timeStamp + ":\n" + preview;
 
         return output;
+    }
+
+    private String makeTimeStamp() {
+
+        Calendar calendar = new GregorianCalendar();
+        int month = calendar.get(Calendar.MONTH) + 1;
+        String time = calendar.get(Calendar.YEAR) + "/" + month + "/" + calendar.get(Calendar.DAY_OF_MONTH) + "     "
+                + calendar.get(Calendar.HOUR_OF_DAY) + ":" + calendar.get(Calendar.MINUTE);
+
+        return time;
     }
 
     @Override

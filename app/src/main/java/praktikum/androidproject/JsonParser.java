@@ -4,12 +4,6 @@ package praktikum.androidproject;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.Calendar;
-import java.util.GregorianCalendar;
-
-/**
- * Created by Kay on 20.07.2016.
- */
 public class JsonParser {
 
     private String message;
@@ -29,11 +23,6 @@ public class JsonParser {
 
         messageObject result;
 
-        Calendar calendar = new GregorianCalendar();
-        int month = calendar.get(Calendar.MONTH) + 1;
-        String time = calendar.get(Calendar.YEAR) + "/" + month + "/" + calendar.get(Calendar.DAY_OF_MONTH) + "     "
-                + calendar.get(Calendar.HOUR_OF_DAY) + ":" + calendar.get(Calendar.MINUTE);
-
         String msg = "";
         String id = "";
 
@@ -44,7 +33,7 @@ public class JsonParser {
         catch (JSONException e) {
             e.printStackTrace();
         }
-        result = new messageObject(time, msg, id, 0);
+        result = new messageObject(0, msg, id);
 
         return result;
     }

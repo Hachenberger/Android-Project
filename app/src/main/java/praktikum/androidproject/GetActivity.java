@@ -20,9 +20,6 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-/**
- * Created by Kay on 19.07.2016.
- */
 public class GetActivity extends AppCompatActivity {
 
     private TextView antwort;
