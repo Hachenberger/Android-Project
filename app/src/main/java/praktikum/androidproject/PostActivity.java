@@ -30,6 +30,8 @@ public class PostActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_post);
 
+        findViewById(R.id.post_background).setBackgroundColor(getIntent().getIntExtra("Color",255));
+
         this.button = (Button)findViewById(R.id.button);
         button.setOnClickListener(new View.OnClickListener() {
             @Override

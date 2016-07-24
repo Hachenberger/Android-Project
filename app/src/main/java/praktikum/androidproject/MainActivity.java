@@ -1,12 +1,14 @@
 package praktikum.androidproject;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.io.BufferedReader;
@@ -16,17 +18,26 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Random;
 
 public class MainActivity extends AppCompatActivity {
 
     private TextView antwort;
     private messageDatabase database;
     private static final String LOG_TAG = GetActivity.class.getSimpleName();
+    private int color;
 
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        Random rnd = new Random();
+        int r = rnd.nextInt(255);
+        int g = rnd.nextInt(255);
+        int b = rnd.nextInt(255);
+        color = Color.argb(255,r,g,b);
+        findViewById(R.id.main_background).setBackgroundColor(color);
 
         database = new messageDatabase(this);
 
@@ -53,6 +64,7 @@ public class MainActivity extends AppCompatActivity {
                 public void onClick(View arg0) {
                     //Neues Intent anlegen
                     Intent archive_intent = new Intent(getApplicationContext(), ArchiveActivity.class);
+                    archive_intent.putExtra("Color", color);
 
                     // Intent starten und zur zweiten Activity wechseln
                     startActivity(archive_intent);
@@ -77,6 +89,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View arg0) {
                     //Neues Intent anlegen
                     Intent post_intent = new Intent(getApplicationContext(), PostActivity.class);
+                    post_intent.putExtra("Color", color);
 
                     // Intent starten und zur zweiten Activity wechseln
                     startActivity(post_intent);
