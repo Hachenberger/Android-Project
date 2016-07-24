@@ -32,13 +32,14 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Random rnd = new Random();
+// geändert Pascal: soll erst beim pausieren die Farbe wechseln, s.u. onPause() oder on Resume()
+/*        Random rnd = new Random();
         int r = rnd.nextInt(255);
         int g = rnd.nextInt(255);
         int b = rnd.nextInt(255);
         color = Color.argb(255,r,g,b);
         findViewById(R.id.main_background).setBackgroundColor(color);
-
+*/
         database = new messageDatabase(this);
 
         Button btn_archive = (Button) findViewById(R.id.button_start_archive_activity);
@@ -61,15 +62,15 @@ public class MainActivity extends AppCompatActivity {
         // ClickListener implementieren für den Button zum Wechsel der Activity
         btn_archive.setOnClickListener(new View.OnClickListener() {
 
-                public void onClick(View arg0) {
-                    //Neues Intent anlegen
-                    Intent archive_intent = new Intent(getApplicationContext(), ArchiveActivity.class);
-                    archive_intent.putExtra("Color", color);
+            public void onClick(View arg0) {
+                //Neues Intent anlegen
+                Intent archive_intent = new Intent(getApplicationContext(), ArchiveActivity.class);
+                archive_intent.putExtra("Color", color);
 
-                    // Intent starten und zur zweiten Activity wechseln
-                    startActivity(archive_intent);
+                // Intent starten und zur zweiten Activity wechseln
+                startActivity(archive_intent);
 
-                }
+            }
         });
 
 /*            btn_get.setOnClickListener(new View.OnClickListener() {
@@ -87,16 +88,42 @@ public class MainActivity extends AppCompatActivity {
         btn_post.setOnClickListener(new View.OnClickListener() {
 
             public void onClick(View arg0) {
-                    //Neues Intent anlegen
-                    Intent post_intent = new Intent(getApplicationContext(), PostActivity.class);
-                    post_intent.putExtra("Color", color);
+                //Neues Intent anlegen
+                Intent post_intent = new Intent(getApplicationContext(), PostActivity.class);
+                post_intent.putExtra("Color", color);
 
-                    // Intent starten und zur zweiten Activity wechseln
-                    startActivity(post_intent);
+                // Intent starten und zur zweiten Activity wechseln
+                startActivity(post_intent);
 
             }
         });
 
+    }
+
+    public void onPause(){
+        super.onPause();
+
+        //wechselt Farbe beim pausieren, finde ich nicht so schön, wie beim zurückschalten ... probieren Jungs, Pascal
+        Random rnd = new Random();
+        int r = rnd.nextInt(255);
+        int g = rnd.nextInt(255);
+        int b = rnd.nextInt(255);
+        color = Color.argb(255,r,g,b);
+        findViewById(R.id.main_background).setBackgroundColor(color);
+
+    }
+
+    public void onResume(){
+        super.onResume();
+
+        //s.o. finde ich persönlich besser, aber ist es die Aufgabe? Pascal
+ /*       Random rnd = new Random();
+        int r = rnd.nextInt(255);
+        int g = rnd.nextInt(255);
+        int b = rnd.nextInt(255);
+        color = Color.argb(255,r,g,b);
+        findViewById(R.id.main_background).setBackgroundColor(color);
+*/
     }
 
     public class getRequest extends AsyncTask<String, String, String> {

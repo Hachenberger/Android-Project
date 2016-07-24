@@ -21,8 +21,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="#FFFFFF"
-            android:text="@string/btn_archive_sort_by_id"
-            android:id="@+id/btn_archive_sort_by_id"
+            android:text="@string/btn_archive_sort_by_time"
+            android:id="@+id/btn_archive_sort_by_time"
             android:background="@drawable/button_layout"
             android:layout_gravity="center_horizontal"
             android:layout_weight="1" />
@@ -38,8 +38,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="#FFFFFF"
-            android:text="@string/btn_archive_sort_by_time"
-            android:id="@+id/btn_archive_sort_by_time"
+            android:text="@string/btn_archive_sort_by_message"
+            android:id="@+id/btn_archive_sort_by_message"
             android:background="@drawable/button_layout"
             android:layout_gravity="center_horizontal"
             android:layout_weight="1" />
@@ -55,8 +55,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="#FFFFFF"
-            android:text="@string/btn_archive_sort_by_message"
-            android:id="@+id/btn_archive_sort_by_message"
+            android:text="@string/btn_archive_sort_by_id"
+            android:id="@+id/btn_archive_sort_by_id"
             android:background="@drawable/button_layout"
             android:layout_gravity="center_horizontal"
             android:layout_weight="1" />

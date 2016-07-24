@@ -93,11 +93,11 @@ public class messageDatabase {
         return messageObj;
     }
 
-    public List<messageObject> getAllMessageObjects() {
+    public List<messageObject> getAllMessageObjects(String sort) {
         List<messageObject> messageObjectList = new ArrayList<>();
 
         Cursor cursor = database.query(archiveDbHelper.TABLE_MESSAGES,
-                columns, null, null, null, null, null);
+                columns, null, null, null, null, sort);
 
         cursor.moveToFirst();
         messageObject messageObj;
