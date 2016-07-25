@@ -2,6 +2,10 @@ package praktikum.androidproject;
 
 import android.content.Intent;
 import android.graphics.Color;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -10,6 +14,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -20,35 +25,42 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Random;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements SensorEventListener {
 
     private TextView antwort;
     private messageDatabase database;
-    private static final String LOG_TAG = GetActivity.class.getSimpleName();
     private int color;
+    private SensorManager sensorManager;
+    private Sensor proxSensor;
+    private messageObject msgObj;
+    private boolean save;
 
+    private static final String LOG_TAG = MainActivity.class.getSimpleName();
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-// geändert Pascal: soll erst beim pausieren die Farbe wechseln, s.u. onPause() oder on Resume()
-/*        Random rnd = new Random();
-        int r = rnd.nextInt(255);
-        int g = rnd.nextInt(255);
-        int b = rnd.nextInt(255);
-        color = Color.argb(255,r,g,b);
-        findViewById(R.id.main_background).setBackgroundColor(color);
-*/
         database = new messageDatabase(this);
 
+        save = true;
+
         Button btn_archive = (Button) findViewById(R.id.button_start_archive_activity);
-        //Button btn_get = (Button) findViewById(R.id.button_start_get_activity);
         Button btn_post = (Button) findViewById(R.id.button_start_post_activity);
 
         //Button und TextFeld
         Button get = (Button) findViewById(R.id.get);
         antwort = (TextView) findViewById(R.id.antwort);
+
+        Log.d(LOG_TAG, "2");
+        database.open();
+        Log.d(LOG_TAG, "1");
+        msgObj = database.getLastMessage();
+        antwort.setText(msgObj.toString());
+        database.close();
+
+        sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
+        proxSensor = sensorManager.getDefaultSensor(Sensor.TYPE_PROXIMITY);
 
         //Click Listener für Button get
         get.setOnClickListener(new View.OnClickListener(){
@@ -73,18 +85,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-/*            btn_get.setOnClickListener(new View.OnClickListener() {
-
-                public void onClick(View arg0) {
-                    //Neues Intent anlegen
-                    Intent get_intent = new Intent(getApplicationContext(), GetActivity.class);
-
-                    // Intent starten und zur zweiten Activity wechseln
-                    startActivity(get_intent);
-
-                }
-            });
-*/
         btn_post.setOnClickListener(new View.OnClickListener() {
 
             public void onClick(View arg0) {
@@ -97,11 +97,36 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
+    }
 
+    public void onAccuracyChanged(Sensor sensor, int accuracy) {
+    }
+
+    public void onSensorChanged(SensorEvent event) {
+        if (event.sensor == proxSensor && event.values[0] == 0 && save) {
+            database.open();
+            messageObject msg = database.createMessageObject(msgObj.getTimeStamp(), msgObj.getMessage(), msgObj.getStringId());
+            database.close();
+
+            Toast.makeText(getApplicationContext(), "Nachricht gespeichert", Toast.LENGTH_SHORT).show();
+
+            save = false;
+        } else {
+            if (event.sensor == proxSensor && event.values[0] > 0) {
+                save = true;
+            }
+        }
+    }
+
+    protected void onResume() {
+        super.onResume();
+        sensorManager.registerListener(this, proxSensor,
+                SensorManager.SENSOR_DELAY_NORMAL);
     }
 
     public void onPause(){
         super.onPause();
+        sensorManager.unregisterListener(this);
 
         //wechselt Farbe beim pausieren, finde ich nicht so schön, wie beim zurückschalten ... probieren Jungs, Pascal
         Random rnd = new Random();
@@ -111,19 +136,6 @@ public class MainActivity extends AppCompatActivity {
         color = Color.argb(255,r,g,b);
         findViewById(R.id.main_background).setBackgroundColor(color);
 
-    }
-
-    public void onResume(){
-        super.onResume();
-
-        //s.o. finde ich persönlich besser, aber ist es die Aufgabe? Pascal
- /*       Random rnd = new Random();
-        int r = rnd.nextInt(255);
-        int g = rnd.nextInt(255);
-        int b = rnd.nextInt(255);
-        color = Color.argb(255,r,g,b);
-        findViewById(R.id.main_background).setBackgroundColor(color);
-*/
     }
 
     public class getRequest extends AsyncTask<String, String, String> {
@@ -172,13 +184,12 @@ public class MainActivity extends AppCompatActivity {
 
             JsonParser jsonParser = new JsonParser(result);
 
-            messageObject msgObj = jsonParser.getMessageObject();
+            msgObj = jsonParser.getMessageObject();
 
             antwort.setText(msgObj.toString());
 
-            database.open();
-            messageObject msg = database.createMessageObject(msgObj.getTimeStamp(), msgObj.getMessage(), msgObj.getStringId());
-            database.close();
+            Toast.makeText(getApplicationContext(), "Nachricht empfangen", Toast.LENGTH_SHORT).show();
+
 
         }
     }

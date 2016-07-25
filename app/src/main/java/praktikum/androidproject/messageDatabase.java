@@ -114,4 +114,21 @@ public class messageDatabase {
 
         return messageObjectList;
     }
+
+    public messageObject getLastMessage() {
+        messageObject lastMessageObject;
+
+        Cursor cursor = database.query(archiveDbHelper.TABLE_MESSAGES, columns,null, null, null, null, null);
+        cursor.moveToLast();
+
+        if (cursor.getCount() > 0) {
+            lastMessageObject = cursorToMessageObject(cursor);
+        } else {
+            lastMessageObject = new messageObject(0,"Noch keine Nachricht in Datenbank gespeichert!", "null");
+        }
+        cursor.close();
+
+        return lastMessageObject;
+    }
+
 }
