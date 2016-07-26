@@ -74,8 +74,25 @@ public class messageObject {
 
         Calendar calendar = new GregorianCalendar();
         int month = calendar.get(Calendar.MONTH) + 1;
+        int minutes = calendar.get(Calendar.MINUTE);
+        int seconds = calendar.get(Calendar.SECOND);
+
+        String mins;
+        if(minutes < 10) {
+            mins = "0" + minutes;
+        } else {
+            mins = String.valueOf(minutes);
+        }
+
+        String sec;
+        if(seconds < 10) {
+            sec = "0" + seconds;
+        } else {
+            sec = String.valueOf(seconds);
+        }
+
         String time = calendar.get(Calendar.YEAR) + "/" + month + "/" + calendar.get(Calendar.DAY_OF_MONTH) + "     "
-                + calendar.get(Calendar.HOUR_OF_DAY) + ":" + calendar.get(Calendar.MINUTE);
+                + calendar.get(Calendar.HOUR_OF_DAY) + ":" + mins + ":" + sec;
 
         return time;
     }

@@ -1,15 +1,21 @@
 package praktikum.androidproject;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.TextView;
+import android.widget.Toast;
+
 import java.util.List;
+import java.util.Random;
 
 
 public class ArchiveActivity extends AppCompatActivity {
@@ -48,7 +54,7 @@ public class ArchiveActivity extends AppCompatActivity {
         });
 
         //LinearLayout archiveLayout = (LinearLayout) findViewById(R.id.archive_background);
-        findViewById(R.id.archive_background).setBackgroundColor(getIntent().getIntExtra("Color",255));
+        findViewById(R.id.archive_background).setBackgroundColor(MainActivity.colorBackground);
 
         sort = "UPPER(" + archiveDbHelper.COLUMN_TIME + ")";
         btn_time.setBackgroundResource(R.drawable.selected_button_layout);
@@ -56,9 +62,7 @@ public class ArchiveActivity extends AppCompatActivity {
         Log.d(LOG_TAG, "Creating database.");
         database = new messageDatabase(this);
 
-        database.open();
         showAllListEntries();
-        database.close();
 
         btn_time.setOnClickListener(new View.OnClickListener(){
             @Override
@@ -101,14 +105,66 @@ public class ArchiveActivity extends AppCompatActivity {
 
     }
 
-    private void showAllListEntries () {
-        List<messageObject> messageObjectList = database.getAllMessageObjects(sort);
+    public void onBackPressed() {
+        super.onBackPressed();
 
-        ArrayAdapter<messageObject> messageObjectArrayAdapter = new ArrayAdapter<> (
+        MainActivity.changeColor = false;
+    }
+
+    public void onResume() {
+        super.onResume();
+
+        MainActivity.changeColor = true;
+    }
+
+    public void onPause(){
+        super.onPause();
+
+        //wechselt Farbe beim pausieren, finde ich nicht so schön, wie beim zurückschalten ... probieren Jungs, Pascal
+        if (MainActivity.changeColor) {
+            Random rnd = new Random();
+            int r = rnd.nextInt(255);
+            int g = rnd.nextInt(255);
+            int b = rnd.nextInt(255);
+            int color = Color.argb(255, r, g, b);
+
+            findViewById(R.id.archive_background).setBackgroundColor(color);
+            MainActivity.colorBackground = color;
+
+            r = rnd.nextInt(255);
+            g = rnd.nextInt(255);
+            b = rnd.nextInt(255);
+            color = Color.argb(255, r, g, b);
+
+            MainActivity.colorText = color;
+            showAllListEntries();
+        }
+    }
+
+    private void showAllListEntries () {
+        database.open();
+        List<messageObject> messageObjectList = database.getAllMessageObjects(sort);
+        database.close();
+        ArrayAdapter<messageObject> messageObjectArrayAdapter = new ArrayAdapter<messageObject> (
                 this,
                 android.R.layout.simple_list_item_1,
-                messageObjectList);
+                messageObjectList){
+
+            @Override
+            public View getView(int position, View convertView,
+                                ViewGroup parent) {
+                View view =super.getView(position, convertView, parent);
+
+                TextView textView=(TextView) view.findViewById(android.R.id.text1);
+
+            /*YOUR CHOICE OF COLOR*/
+                textView.setTextColor(MainActivity.colorText);
+
+                return view;
+            }
+        };
 
         messageObjectListView.setAdapter(messageObjectArrayAdapter);
     }
+
 }

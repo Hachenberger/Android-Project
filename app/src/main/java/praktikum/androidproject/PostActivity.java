@@ -1,12 +1,14 @@
 package praktikum.androidproject;
 
 import android.app.Activity;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import org.json.JSONException;
@@ -17,6 +19,7 @@ import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Random;
 
 /**
  * Created by Kay on 19.07.2016.
@@ -30,7 +33,10 @@ public class PostActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_post);
 
-        findViewById(R.id.post_background).setBackgroundColor(getIntent().getIntExtra("Color",255));
+        //findViewById(R.id.post_background).setBackgroundColor(getIntent().getIntExtra("Color",255));
+        findViewById(R.id.post_background).setBackgroundColor(MainActivity.colorBackground);
+        TextView textView=(TextView) findViewById(R.id.editText);
+        textView.setTextColor(MainActivity.colorText);
 
         this.button = (Button)findViewById(R.id.button);
         button.setOnClickListener(new View.OnClickListener() {
@@ -47,6 +53,41 @@ public class PostActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    public void onBackPressed() {
+        super.onBackPressed();
+
+        MainActivity.changeColor = false;
+    }
+
+    public void onResume() {
+        super.onResume();
+
+        MainActivity.changeColor = true;
+    }
+
+    public void onPause(){
+        super.onPause();
+
+        //wechselt Farbe beim pausieren, finde ich nicht so schön, wie beim zurückschalten ... probieren Jungs, Pascal
+        if (MainActivity.changeColor) {
+            Random rnd = new Random();
+            int r = rnd.nextInt(255);
+            int g = rnd.nextInt(255);
+            int b = rnd.nextInt(255);
+            int color = Color.argb(255, r, g, b);
+
+            findViewById(R.id.post_background).setBackgroundColor(color);
+            MainActivity.colorBackground = color;
+
+            r = rnd.nextInt(255);
+            g = rnd.nextInt(255);
+            b = rnd.nextInt(255);
+            MainActivity.colorText = Color.argb(255, r, g, b);
+            TextView textView=(TextView) findViewById(R.id.editText);
+            textView.setTextColor(MainActivity.colorText);
+        }
     }
 
     private class DlAsync extends AsyncTask<String,Void,String>{

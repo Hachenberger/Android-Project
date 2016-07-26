@@ -27,17 +27,23 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
     private TextView antwort;
     private messageDatabase database;
-    private int color;
+    public static int colorBackground;
+    public static int colorText;
     private SensorManager sensorManager;
     private Sensor proxSensor;
     private messageObject msgObj;
     private boolean save;
+    public static boolean changeColor;
 
     private static final String LOG_TAG = MainActivity.class.getSimpleName();
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        colorBackground = Color.WHITE;
+        colorText = Color.BLACK;
+        changeColor = false;
 
         database = new messageDatabase(this);
 
@@ -55,6 +61,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         Log.d(LOG_TAG, "1");
         msgObj = database.getLastMessage();
         antwort.setText(msgObj.toString());
+
         database.close();
 
         sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
@@ -75,7 +82,8 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             public void onClick(View arg0) {
                 //Neues Intent anlegen
                 Intent archive_intent = new Intent(getApplicationContext(), ArchiveActivity.class);
-                archive_intent.putExtra("Color", color);
+
+                changeColor = false;
 
                 // Intent starten und zur zweiten Activity wechseln
                 startActivity(archive_intent);
@@ -88,7 +96,8 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             public void onClick(View arg0) {
                 //Neues Intent anlegen
                 Intent post_intent = new Intent(getApplicationContext(), PostActivity.class);
-                post_intent.putExtra("Color", color);
+
+                changeColor = false;
 
                 // Intent starten und zur zweiten Activity wechseln
                 startActivity(post_intent);
@@ -120,20 +129,38 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         super.onResume();
         sensorManager.registerListener(this, proxSensor,
                 SensorManager.SENSOR_DELAY_NORMAL);
+
+        findViewById(R.id.main_background).setBackgroundColor(colorBackground);
+        TextView textView=(TextView) findViewById(R.id.antwort);
+        textView.setTextColor(MainActivity.colorText);
+        changeColor = true;
     }
+
+
 
     public void onPause(){
         super.onPause();
         sensorManager.unregisterListener(this);
 
         //wechselt Farbe beim pausieren, finde ich nicht so schön, wie beim zurückschalten ... probieren Jungs, Pascal
-        Random rnd = new Random();
-        int r = rnd.nextInt(255);
-        int g = rnd.nextInt(255);
-        int b = rnd.nextInt(255);
-        color = Color.argb(255,r,g,b);
-        findViewById(R.id.main_background).setBackgroundColor(color);
 
+        if (changeColor) {
+            Random rnd = new Random();
+            int r = rnd.nextInt(255);
+            int g = rnd.nextInt(255);
+            int b = rnd.nextInt(255);
+            colorBackground = Color.argb(255, r, g, b);
+
+            findViewById(R.id.main_background).setBackgroundColor(colorBackground);
+
+            r = rnd.nextInt(255);
+            g = rnd.nextInt(255);
+            b = rnd.nextInt(255);
+            colorText = Color.argb(255, r, g, b);
+            TextView textView=(TextView) findViewById(R.id.antwort);
+            textView.setTextColor(colorText);
+
+        }
     }
 
     public class getRequest extends AsyncTask<String, String, String> {
