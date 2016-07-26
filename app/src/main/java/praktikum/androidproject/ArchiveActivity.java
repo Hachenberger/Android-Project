@@ -7,6 +7,7 @@ import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.LinearLayout;
@@ -24,6 +25,7 @@ public class ArchiveActivity extends AppCompatActivity {
     private static final String LOG_TAG = ArchiveActivity.class.getSimpleName();
     private messageDatabase database;
     private String sort;
+    private ListView messageObjectListView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,6 +35,25 @@ public class ArchiveActivity extends AppCompatActivity {
         final Button btn_time = (Button) findViewById(R.id.btn_archive_sort_by_time);
         final Button btn_message = (Button) findViewById(R.id.btn_archive_sort_by_message);
         final Button btn_id = (Button) findViewById(R.id.btn_archive_sort_by_id);
+
+        messageObjectListView = (ListView) findViewById(R.id.listview_archive_messages);
+        messageObjectListView.setClickable(true);
+
+        messageObjectListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+            @Override
+            public void onItemClick(AdapterView<?> arg0, View arg1, int position, long arg3) {
+
+                Object o = messageObjectListView.getItemAtPosition(position);
+
+                Intent sendIntent = new Intent();
+                sendIntent.setAction(Intent.ACTION_SEND);
+                sendIntent.putExtra(Intent.EXTRA_TEXT, o.toString());
+                sendIntent.setType("text/plain");
+                startActivity(sendIntent);
+
+            }
+        });
 
         //LinearLayout archiveLayout = (LinearLayout) findViewById(R.id.archive_background);
         findViewById(R.id.archive_background).setBackgroundColor(getIntent().getIntExtra("Color",255));
@@ -96,7 +117,6 @@ public class ArchiveActivity extends AppCompatActivity {
                 android.R.layout.simple_list_item_1,
                 messageObjectList);
 
-        ListView shoppingMemosListView = (ListView) findViewById(R.id.listview_archive_messages);
-        shoppingMemosListView.setAdapter(messageObjectArrayAdapter);
+        messageObjectListView.setAdapter(messageObjectArrayAdapter);
     }
 }

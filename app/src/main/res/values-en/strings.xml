@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Android Praktikum</string>
+
+    <string name="archive_sort_caption">Sort by:</string>
+    <string name="btn_archive_sort_by_id">Server ID</string>
+    <string name="btn_archive_sort_by_time">Time</string>
+    <string name="btn_archive_sort_by_message">Message</string>
+
+    <string name="button_get_activity">Get message</string>
+    <string name="button_post_activity">Send</string>
+    <string name="button_archive_activity">Archive</string>
+
+    <string name="title_activity_archive">Android Praktikum - Archive</string>
+    <string name="title_activity_post">Android Praktikum - Send</string>
+
+    <string name="send_default_text">Message to send</string>
+</resources>

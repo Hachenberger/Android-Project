@@ -2,18 +2,17 @@
     <string name="app_name">Android Praktikum</string>
 
     <string name="archive_sort_caption">Sortieren nach:</string>
-    <string name="btn_archive_sort_by_id">_id</string>
+    <string name="btn_archive_sort_by_id">Server ID</string>
     <string name="btn_archive_sort_by_time">Zeit</string>
     <string name="btn_archive_sort_by_message">Nachricht</string>
 
-    <string name="button_get_activity">GET</string>
-    <string name="button_post_activity">POST</string>
-    <string name="button_archive_activity">ARCHIVE</string>
+    <string name="button_get_activity">Nachricht abrufen</string>
+    <string name="button_post_activity">Senden</string>
+    <string name="button_archive_activity">Archiv</string>
 
     <string name="title_activity_archive">Android Praktikum - Archiv</string>
-    <string name="title_activity_get">Android Praktikum - Get</string>
-    <string name="title_activity_post">Android Praktikum - Post</string>
+    <string name="title_activity_post">Android Praktikum - Senden</string>
 
-
+    <string name="send_default_text">Nachricht zum Senden...</string>
 </resources>
 

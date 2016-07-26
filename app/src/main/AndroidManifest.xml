@@ -21,9 +21,6 @@
         <activity android:name=".ArchiveActivity" android:label="@string/title_activity_archive">
         </activity>
 
-        <activity android:name=".GetActivity" android:label="@string/title_activity_get">
-        </activity>
-
         <activity android:name=".PostActivity" android:label="@string/title_activity_post">
         </activity>
 
