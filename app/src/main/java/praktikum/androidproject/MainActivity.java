@@ -12,10 +12,8 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -108,7 +106,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             messageObject msg = database.createMessageObject(msgObj.getTimeStamp(), msgObj.getMessage(), msgObj.getStringId());
             database.close();
 
-            Toast.makeText(getApplicationContext(), "Nachricht gespeichert", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), R.string.toast_save_message, Toast.LENGTH_SHORT).show();
 
             save = false;
         } else {
@@ -188,7 +186,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
             antwort.setText(msgObj.toString());
 
-            Toast.makeText(getApplicationContext(), "Nachricht empfangen", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), R.string.toast_get_message, Toast.LENGTH_SHORT).show();
 
 
         }

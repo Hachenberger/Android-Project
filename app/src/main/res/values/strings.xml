@@ -14,5 +14,9 @@
     <string name="title_activity_post">Android Praktikum - Senden</string>
 
     <string name="send_default_text">Nachricht zum Senden...</string>
+
+    <string name="toast_get_message">Nachricht empfangen.</string>
+    <string name="toast_save_message">Nachricht gespeichert.</string>
+    <string name="toast_send_message">Nachricht gesendet.</string>
 </resources>
 
