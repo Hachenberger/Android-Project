@@ -3,6 +3,7 @@ https://github.com/Hachenberger/Android-Project
 # Android-Project
 
 Tasks:  
+
 1. Stellen Sie Ihre App in den Sprachen deutsch und englisch bereit.  
 
 ACTIVITY 1:  
