@@ -12,8 +12,6 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
-
 import java.util.List;
 import java.util.Random;
 
@@ -53,7 +51,6 @@ public class ArchiveActivity extends AppCompatActivity {
             }
         });
 
-        //LinearLayout archiveLayout = (LinearLayout) findViewById(R.id.archive_background);
         findViewById(R.id.archive_background).setBackgroundColor(MainActivity.colorBackground);
 
         sort = "UPPER(" + archiveDbHelper.COLUMN_TIME + ")";
@@ -120,7 +117,6 @@ public class ArchiveActivity extends AppCompatActivity {
     public void onPause(){
         super.onPause();
 
-        //wechselt Farbe beim pausieren, finde ich nicht so schön, wie beim zurückschalten ... probieren Jungs, Pascal
         if (MainActivity.changeColor) {
             Random rnd = new Random();
             int r = rnd.nextInt(255);
@@ -151,20 +147,14 @@ public class ArchiveActivity extends AppCompatActivity {
                 messageObjectList){
 
             @Override
-            public View getView(int position, View convertView,
-                                ViewGroup parent) {
-                View view =super.getView(position, convertView, parent);
-
+            public View getView(int position, View convertView, ViewGroup parent) {
+                View view = super.getView(position, convertView, parent);
                 TextView textView=(TextView) view.findViewById(android.R.id.text1);
-
-            /*YOUR CHOICE OF COLOR*/
                 textView.setTextColor(MainActivity.colorText);
 
                 return view;
             }
         };
-
         messageObjectListView.setAdapter(messageObjectArrayAdapter);
     }
-
 }

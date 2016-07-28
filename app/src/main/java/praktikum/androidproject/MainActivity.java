@@ -9,7 +9,6 @@ import android.hardware.SensorManager;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -26,66 +25,62 @@ import java.util.Random;
 public class MainActivity extends AppCompatActivity implements SensorEventListener {
 
     private TextView antwort;
+
     private messageDatabase database;
+    private messageObject msgObj;
+
     public static int colorBackground;
     public static int colorText;
+
     private SensorManager sensorManager;
     private Sensor proxSensor;
-    private messageObject msgObj;
+    private Sensor accelerometer;
+    private float accel;
+    private float accelAkt;
+    private float accelVor;
+    private long lastSensorChangeTime = System.currentTimeMillis();
+
     private boolean save;
     public static boolean changeColor;
-
-    private static final String LOG_TAG = MainActivity.class.getSimpleName();
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        colorBackground = Color.WHITE;
-        colorText = Color.BLACK;
-        changeColor = false;
-
-        database = new messageDatabase(this);
-
-        save = true;
-
         Button btn_archive = (Button) findViewById(R.id.button_start_archive_activity);
         Button btn_post = (Button) findViewById(R.id.button_start_post_activity);
-
-        //Button und TextFeld
-        Button get = (Button) findViewById(R.id.get);
         antwort = (TextView) findViewById(R.id.antwort);
 
-        Log.d(LOG_TAG, "2");
-        database.open();
-        Log.d(LOG_TAG, "1");
-        msgObj = database.getLastMessage();
-        antwort.setText(msgObj.toString());
+        colorBackground = Color.WHITE;
+        colorText = Color.BLACK;
 
-        database.close();
+        changeColor = false;
+        save = true;
 
         sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
         proxSensor = sensorManager.getDefaultSensor(Sensor.TYPE_PROXIMITY);
 
-        //Click Listener für Button get
-        get.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View view) {
-                new MainActivity.getRequest().execute("http://app-imtm.iaw.ruhr-unibochum.de:3000/posts/random");
-            }
+        accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+        sensorManager.registerListener(this, accelerometer, SensorManager.SENSOR_DELAY_NORMAL);
+        accel = 0.00f;
+        accelAkt = SensorManager.GRAVITY_EARTH;
+        accelVor = SensorManager.GRAVITY_EARTH;
 
-        });
+        database = new messageDatabase(this);
 
-        // ClickListener implementieren für den Button zum Wechsel der Activity
+        database.open();
+        msgObj = database.getLastMessage();
+        antwort.setText(msgObj.toString());
+        database.close();
+
+
         btn_archive.setOnClickListener(new View.OnClickListener() {
 
             public void onClick(View arg0) {
-                //Neues Intent anlegen
                 Intent archive_intent = new Intent(getApplicationContext(), ArchiveActivity.class);
 
                 changeColor = false;
 
-                // Intent starten und zur zweiten Activity wechseln
                 startActivity(archive_intent);
 
             }
@@ -94,12 +89,10 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         btn_post.setOnClickListener(new View.OnClickListener() {
 
             public void onClick(View arg0) {
-                //Neues Intent anlegen
                 Intent post_intent = new Intent(getApplicationContext(), PostActivity.class);
 
                 changeColor = false;
 
-                // Intent starten und zur zweiten Activity wechseln
                 startActivity(post_intent);
 
             }
@@ -110,29 +103,58 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     }
 
     public void onSensorChanged(SensorEvent event) {
-        if (event.sensor == proxSensor && event.values[0] == 0 && save) {
-            database.open();
-            messageObject msg = database.createMessageObject(msgObj.getTimeStamp(), msgObj.getMessage(), msgObj.getStringId());
-            database.close();
 
-            Toast.makeText(getApplicationContext(), R.string.toast_save_message, Toast.LENGTH_SHORT).show();
+        if (System.currentTimeMillis() - lastSensorChangeTime > 3000) {
 
-            save = false;
-        } else {
-            if (event.sensor == proxSensor && event.values[0] > 0) {
+            if (event.sensor == proxSensor && event.values[0] == 0 && save) {
+
+                database.open();
+                database.createMessageObject(msgObj.getTimeStamp(), msgObj.getMessage(), msgObj.getStringId());
+                database.close();
+
+                Toast.makeText(getApplicationContext(), R.string.toast_save_message, Toast.LENGTH_SHORT).show();
+
+                save = false;
+
+            } else if (event.sensor == proxSensor && event.values[0] > 0) {
+
                 save = true;
+                lastSensorChangeTime = System.currentTimeMillis();
+
+            } else if (event.sensor == accelerometer && event.values.length > 2) {
+
+                float x = event.values[0];
+                float y = event.values[1];
+                float z = event.values[2];
+
+                accelVor = accelAkt;
+                accelAkt = (float) Math.sqrt((double) (x * x + y * y + z * z));
+
+                float delta = accelAkt - accelVor;
+
+                accel = accel * 0.9f + delta;
+
+                if (accel > 10) {
+
+                    new MainActivity.getRequest().execute("http://app-imtm.iaw.ruhr-unibochum.de:3000/posts/random");
+                    lastSensorChangeTime = System.currentTimeMillis();
+
+                }
             }
         }
     }
 
     protected void onResume() {
+
         super.onResume();
-        sensorManager.registerListener(this, proxSensor,
-                SensorManager.SENSOR_DELAY_NORMAL);
+        sensorManager.registerListener(this, proxSensor, SensorManager.SENSOR_DELAY_NORMAL);
+        sensorManager.registerListener(this, accelerometer, SensorManager.SENSOR_DELAY_NORMAL);
 
         findViewById(R.id.main_background).setBackgroundColor(colorBackground);
+
         TextView textView=(TextView) findViewById(R.id.antwort);
         textView.setTextColor(MainActivity.colorText);
+
         changeColor = true;
     }
 
@@ -140,15 +162,17 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
     public void onPause(){
         super.onPause();
+
         sensorManager.unregisterListener(this);
 
-        //wechselt Farbe beim pausieren, finde ich nicht so schön, wie beim zurückschalten ... probieren Jungs, Pascal
-
         if (changeColor) {
+
             Random rnd = new Random();
+
             int r = rnd.nextInt(255);
             int g = rnd.nextInt(255);
             int b = rnd.nextInt(255);
+
             colorBackground = Color.argb(255, r, g, b);
 
             findViewById(R.id.main_background).setBackgroundColor(colorBackground);
@@ -156,7 +180,9 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             r = rnd.nextInt(255);
             g = rnd.nextInt(255);
             b = rnd.nextInt(255);
+
             colorText = Color.argb(255, r, g, b);
+
             TextView textView=(TextView) findViewById(R.id.antwort);
             textView.setTextColor(colorText);
 
@@ -170,6 +196,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         protected String doInBackground(String... params) {
             HttpURLConnection verbindung = null;
             BufferedReader reader = null;
+
             try {
                 URL url = new URL(params[0]);
                 verbindung = (HttpURLConnection) url.openConnection();
@@ -201,8 +228,6 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             return null;
         }
 
-
-
         @Override
         protected void onPostExecute(String result) {
             super.onPostExecute(result);
@@ -214,7 +239,6 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             antwort.setText(msgObj.toString());
 
             Toast.makeText(getApplicationContext(), R.string.toast_get_message, Toast.LENGTH_SHORT).show();
-
 
         }
     }

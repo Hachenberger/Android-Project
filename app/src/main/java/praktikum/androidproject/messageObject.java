@@ -16,6 +16,7 @@ public class messageObject {
         this.id = id;
         this.message = params[0];
         this.StringId = params[1];
+        this.preview = false;
 
         if (params.length > 2) {
             this.timeStamp = params[2];
@@ -64,12 +65,6 @@ public class messageObject {
         this.id = id;
     }
 
-    public String getPreviewMessage() {
-        String output = timeStamp + ":\n" + preview;
-
-        return output;
-    }
-
     private String makeTimeStamp() {
 
         Calendar calendar = new GregorianCalendar();
@@ -103,8 +98,8 @@ public class messageObject {
         String output = "";
 
         if (this.preview) {
-            if (this.message.length() > 25) {
-                output = timeStamp + "\n" + message.substring(0,21) + "...";
+            if (this.message.length() > 100) {
+                output = timeStamp + "\n" + message.substring(0,96) + "...";
             } else {
                 output = timeStamp + "\n" + message;
             }

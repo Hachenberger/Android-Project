@@ -23,7 +23,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Random;
 
-public class MainActivity extends AppCompatActivity implements SensorEventListener {
+public class Test_Pascal extends AppCompatActivity implements SensorEventListener {
 
     private TextView antwort;
     private messageDatabase database;
@@ -88,7 +88,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         get.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view) {
-                new MainActivity.getRequest().execute("http://app-imtm.iaw.ruhr-unibochum.de:3000/posts/random");
+                new Test_Pascal.getRequest().execute("http://app-imtm.iaw.ruhr-unibochum.de:3000/posts/random");
             }
 
         });

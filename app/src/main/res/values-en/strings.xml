@@ -16,6 +16,10 @@
 
     <string name="send_default_text">Message to send</string>
 
+    <string name="last_message_default">No Message saved yet.</string>
+
+    <string name="shake_me">Shake me!</string>
+
     <string name="toast_get_message">Message received.</string>
     <string name="toast_save_message">Message saved.</string>
     <string name="toast_send_message">Message sent.</string>

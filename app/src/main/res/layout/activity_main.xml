@@ -25,14 +25,12 @@
 
         android:id="@+id/main_background">
 
-        <Button
+        <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="GET"
-            android:textColor="#FFFFFF"
-            android:background="@drawable/button_layout"
-            android:id="@+id/get"
-            />
+            android:textColor="#000000"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="@string/shake_me" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -40,8 +38,7 @@
             android:id="@+id/antwort"
             android:textColor="#000000"
             android:textAppearance="?android:attr/textAppearanceMedium"
-            android:layout_below="@+id/get"
-            android:text="Antwort" />
+            android:text="@string/last_message_default"/>
 
     </LinearLayout>
 
