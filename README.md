@@ -1,4 +1,5 @@
-https://github.com/Hachenberger/Android-Project
+https://github.com/Hachenberger/Android-Project  
+Kay Hachenberger, Pascal Wittich, Bersant Kabashi
 
 # Android-Project
 
